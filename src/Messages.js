@@ -6,11 +6,23 @@ import isSameDay from 'date-fns/is_same_day'
 
 function ChatScroller(props) {
   const scrollerRef = useRef()
+  const shouldScrollRef = useRef(true)
+
   useEffect(() => {
-    const node = scrollerRef.current
-    node.scrollTop = node.scrollHeight
+    if(shouldScrollRef.current) {
+      const node = scrollerRef.current
+      node.scrollTop = node.scrollHeight
+    }
   })
-  return <div {...props} ref={scrollerRef} />
+
+  const handleScroll = () => {
+    const node = scrollerRef.current
+    const { scrollTop, clientHeight, scrollHeight } = node
+    const atBottom = scrollHeight === clientHeight + scrollTop
+    shouldScrollRef.current = atBottom
+  }
+
+  return <div {...props} ref={scrollerRef} onScroll={handleScroll} />
 }
 
 function Messages({ channelId }) {
